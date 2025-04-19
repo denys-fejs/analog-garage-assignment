@@ -12,20 +12,19 @@ import {
   Brush
 } from "recharts";
 
-import { Producer } from "../../types";
-import { Card } from "../../components";
-import { formatTimestamp } from "../../utils";
-import { TimeframeSelector } from "../../modules";
-import { useData } from "../../context/DataContext";
-import TimeControlBar from "../../components/TimeControlBar/TimeControlBar";
+import { Producer } from "@/types";
+import { Card } from "@/components";
+import { formatTimestamp } from "@/utils";
+import { TimeframeSelector } from "@/modules";
+import { useData } from "@/context/DataContext";
+import TimeControlBar from "@/components/TimeControlBar";
 
 // Dashboard component to visualize producer data with enhanced time controls
-export const Dashboard: React.FC = () => {
+const Dashboard: React.FC = () => {
   const {
     producers,
     filteredData,
     activeProducers,
-    customTimeframe,
 
     setCustomTimeframe,
     setSelectedTimeframe
@@ -198,12 +197,6 @@ export const Dashboard: React.FC = () => {
                 )}
                 <div className="mt-2 text-xs text-gray-500">
                   Data points: {mainChartData.length}
-                  {customTimeframe && (
-                    <span className="ml-4">
-                      Custom range: {formatTimestamp(customTimeframe.start)} -{" "}
-                      {formatTimestamp(customTimeframe.end)}
-                    </span>
-                  )}
                 </div>
               </Card>
             </div>

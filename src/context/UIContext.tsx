@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 
-import { Timeframe, TimeframeUnit } from "../types";
+import { Timeframe, TimeframeUnit } from "@/types";
 
 interface UIContextProps {
   sidebarOpen: boolean;

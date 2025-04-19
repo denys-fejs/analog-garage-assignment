@@ -10,8 +10,8 @@ import {
   Legend
 } from "recharts";
 
-import { formatTimestamp } from "../../../utils";
-import { DataPoint, Producer } from "../../../types";
+import { formatTimestamp } from "@/utils";
+import { DataPoint, Producer } from "@/types";
 
 interface MultiSeriesChartProps {
   dataSeries: Record<string, DataPoint[]>;

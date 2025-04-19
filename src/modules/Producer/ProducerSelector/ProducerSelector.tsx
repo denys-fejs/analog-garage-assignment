@@ -1,7 +1,7 @@
 import { FC } from "react";
 
-import { Card } from "../../../components";
-import { useData } from "../../../context/DataContext";
+import { Card } from "@/components";
+import { useData } from "@/context/DataContext";
 
 //ProducerSelector component for toggling data producers
 const ProducerSelector: FC = () => {

@@ -1,13 +1,12 @@
 import React, { useEffect } from "react";
 
-import { TimeframeUnit } from "../../../types";
-import { useData } from "../../../context/DataContext";
+import { TimeframeUnit } from "@/types";
+import { useData } from "@/context/DataContext";
 
 const TimeframeSelector: React.FC = () => {
   const {
     dataPoints,
     filteredData,
-    customTimeframe,
     selectedTimeframe,
     availableTimeframes,
 
@@ -57,7 +56,7 @@ const TimeframeSelector: React.FC = () => {
         <div className="flex flex-wrap gap-2">
           <button
             className={`px-3 py-1 text-sm rounded-md transition-colors ${
-              selectedTimeframe === null && !customTimeframe
+              selectedTimeframe === null
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-gray-800 hover:bg-gray-300"
             }`}

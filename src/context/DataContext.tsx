@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 
-import { config } from "../config";
-import { useThrottle } from "../hooks/useThrottle";
-import { DataPoint, Producer, Timeframe } from "../types";
-import { filterDataByTimeframe, normalizeTimestamp } from "../utils";
-import { websocketService, ConnectionStatus } from "../services/websocket.service";
+import { config } from "@/config";
+import { useThrottle } from "@/hooks/useThrottle";
+import { DataPoint, Producer, Timeframe } from "@/types";
+import { filterDataByTimeframe, normalizeTimestamp } from "@/utils";
+import { websocketService, ConnectionStatus } from "@/services/websocket.service";
 
 const PRODUCER_COLORS = [
   "#FF6384",

@@ -1,8 +1,8 @@
 import { FC } from "react";
 
-import { useUI } from "../context/UIContext";
-import DataToggle from "../components/MockData";
-import ProducerSelector from "../modules/Producer/ProducerSelector";
+import { useUI } from "@/context/UIContext";
+import DataToggle from "@/components/MockData";
+import ProducerSelector from "@/modules/Producer/ProducerSelector";
 
 export const Sidebar: FC = () => {
   const { sidebarOpen, toggleSidebar } = useUI();

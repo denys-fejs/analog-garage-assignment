@@ -10,8 +10,8 @@ import {
   Legend
 } from "recharts";
 
-import { DataPoint } from "../../../types";
-import { formatTimestamp } from "../../../utils";
+import { DataPoint } from "@/types";
+import { formatTimestamp } from "@/utils";
 
 interface LineChartProps {
   data: DataPoint[];

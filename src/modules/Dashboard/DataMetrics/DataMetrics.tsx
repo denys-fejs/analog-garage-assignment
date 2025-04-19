@@ -1,8 +1,8 @@
 import { FC, useMemo } from "react";
 
-import { DataPoint } from "../../../types";
-import { Card } from "../../../components";
-import { calculateMetrics, formatDuration } from "../../../utils";
+import { DataPoint } from "@/types";
+import { Card } from "@/components";
+import { calculateMetrics, formatDuration } from "@/utils";
 
 interface DataMetricsProps {
   data: DataPoint[];

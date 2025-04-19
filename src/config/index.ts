@@ -1,4 +1,4 @@
-import { TimeframeUnit } from "../types";
+import { TimeframeUnit } from "@/types";
 
 export const config = {
   //WebSocket connection settings

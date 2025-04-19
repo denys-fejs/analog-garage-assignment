@@ -1,9 +1,9 @@
 import React from "react";
 
-import { Layout } from "./layout/Layout";
-import { UIProvider } from "./context/UIContext";
-import { DataProvider } from "./context/DataContext";
-import { Dashboard } from "./views/Dashboard/Dashboard";
+import { Dashboard } from "@/views";
+import { Layout } from "@/layout/Layout";
+import { UIProvider } from "@/context/UIContext";
+import { DataProvider } from "@/context/DataContext";
 
 import "./app.css";
 

@@ -1,7 +1,7 @@
 import { FC } from "react";
 
-import { useUI } from "../context/UIContext";
-import { ServerStatus } from "../modules";
+import { ServerStatus } from "@/modules";
+import { useUI } from "@/context/UIContext";
 
 export const Header: FC = () => {
   const { toggleSidebar } = useUI();

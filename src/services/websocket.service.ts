@@ -1,6 +1,6 @@
-import { config } from "../config";
-import { BackendDataEntry, DataPoint } from "../types";
-import { normalizeTimestamp } from "../utils";
+import { config } from "@/config";
+import { normalizeTimestamp } from "@/utils";
+import { BackendDataEntry, DataPoint } from "@/types";
 
 // Type definition for WebSocket message callback function
 type WebSocketMessageCallback = (data: DataPoint[]) => void;

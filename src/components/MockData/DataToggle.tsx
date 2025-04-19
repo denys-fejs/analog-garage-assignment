@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { websocketService } from "../../services/websocket.service";
+import { websocketService } from "@/services/websocket.service";
 
 interface DataToggleProps {
   className?: string;

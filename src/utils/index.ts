@@ -1,4 +1,4 @@
-import { DataPoint, DataMetrics, Timeframe, TimeframeUnit } from "../types";
+import { DataPoint, DataMetrics, Timeframe, TimeframeUnit } from "@/types";
 
 export const normalizeTimestamp = (timestamp: number | string): number => {
   // Convert string timestamps to numbers
