@@ -6,13 +6,6 @@
 - **Multi-series line charts** for visualizing multiple data producers
 - **Time-based filtering** with customizable timeframes
 
-## Prerequisites
-
-- Node.js (v18+)
-- npm or yarn
-- Rust (for the backend server)
-- Cargo (Rust package manager)
-
 ## Installation
 
 ### Frontend
@@ -125,10 +118,6 @@ src/
 ├── utils/             # Helper functions
 └── views/             # Page components
 ```
-
-## Technical Documentation
-
-For more detailed technical documentation, see the [docs].
 
 ## Testing
 

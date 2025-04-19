@@ -3,7 +3,7 @@ import { FC } from "react";
 import { Card } from "@/components";
 import { useData } from "@/context/DataContext";
 
-//ProducerSelector component for toggling data producers
+// ProducerSelector component for toggling data producers
 const ProducerSelector: FC = () => {
   const { producers, activeProducers, toggleProducer } = useData();
 

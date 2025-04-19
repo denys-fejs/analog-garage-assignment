@@ -3,7 +3,7 @@ import { useState, useEffect, FC } from "react";
 import { useData } from "@/context/DataContext";
 import { websocketService, ConnectionStatus } from "@/services/websocket.service";
 
-//ServerStatus component for monitoring connection status
+// ServerStatus component for monitoring connection status
 const ServerStatus: FC = () => {
   const { activeProducers, isPaused } = useData();
   const [displayStatus, setDisplayStatus] = useState<ConnectionStatus>(
