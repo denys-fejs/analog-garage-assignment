@@ -59,7 +59,7 @@ The backend will start generating random walk time series data at 1000 points pe
 In a separate terminal, start the React development server:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 This will start the development server at [http://localhost:5173](http://localhost:5173).
@@ -68,25 +68,25 @@ This will start the development server at [http://localhost:5173](http://localho
 
 ```bash
 # Start development server
-npm run dev
+pnpm run dev
 
 # Build for production
-npm run build
+pnpm run build
 
 # Preview production build
-npm run preview
+pnpm run preview
 
 # Run linting
-npm run lint
+pnpm run lint
 
 # Run tests
-npm test
+pnpm test
 
 # Run tests with watch mode
-npm run test:watch
+pnpm run test:watch
 
 # Generate test coverage report
-npm run test:coverage
+pnpm run test:coverage
 ```
 
 ## Usage Guide
@@ -128,7 +128,7 @@ src/
 
 ## Technical Documentation
 
-For more detailed technical documentation, see the [docs](./docs/) directory.
+For more detailed technical documentation, see the [docs].
 
 ## Testing
 
@@ -136,15 +136,11 @@ The project includes a comprehensive test suite using Vitest and React Testing L
 
 ```bash
 # Run all tests
-npm test
+pnpm test
 
 # Run tests in watch mode
-npm run test:watch
+pnpm run test:watch
 
 # Generate test coverage report
-npm run test:coverage
+pnpm run test:coverage
 ```
-
-## License
-
-[MIT](LICENSE)
