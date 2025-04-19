@@ -21,8 +21,8 @@ Clone the repository and install dependencies:
 
 ```bash
 git clone https://github.com/denys-fejs/analog-garage-assignment.git
-cd analog-garage
-npm install
+cd analog-garage-assignment
+pnpm install
 ```
 
 ### Backend
