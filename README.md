@@ -20,7 +20,7 @@
 Clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/
+git clone https://github.com/denys-fejs/analog-garage-assignment.git
 cd analog-garage
 npm install
 ```
