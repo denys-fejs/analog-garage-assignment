@@ -5,7 +5,7 @@ import { Layout } from "@/layout/Layout";
 import { UIProvider } from "@/context/UIContext";
 import { DataProvider } from "@/context/DataContext";
 
-import "./app.css";
+import "@/App.css";
 
 // Main App component
 const App: FC = () => {
