@@ -1,14 +1,8 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useState, useCallback, FC, ReactNode } from "react";
 
 import { Timeframe, TimeframeUnit } from "@/types";
 
-interface UIContextProps {
-  sidebarOpen: boolean;
-  availableTimeframes: Timeframe[];
-  toggleSidebar: () => void;
-  setActiveTab: (tab: string) => void;
-  activeTab: string;
-}
+import { UIContextProps } from "./types";
 
 // Predefined timeframes for the UI
 export const DEFAULT_TIMEFRAMES: Timeframe[] = [
@@ -23,7 +17,7 @@ export const DEFAULT_TIMEFRAMES: Timeframe[] = [
 // Default context value
 const UIContext = createContext<UIContextProps | undefined>(undefined);
 
-export const UIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const UIProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<string>("dashboard");
 

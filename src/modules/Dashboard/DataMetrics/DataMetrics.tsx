@@ -1,15 +1,9 @@
 import { FC, useMemo } from "react";
 
-import { DataPoint } from "@/types";
 import { Card } from "@/components";
 import { calculateMetrics, formatDuration } from "@/utils";
 
-interface DataMetricsProps {
-  data: DataPoint[];
-  producerName: string;
-  color?: string;
-  className?: string;
-}
+import { DataMetricsProps } from "./types";
 
 // DataMetrics component for displaying statistical metrics
 const DataMetrics: FC<DataMetricsProps> = ({ data, producerName, className = "" }) => {

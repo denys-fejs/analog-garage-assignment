@@ -1,9 +1,9 @@
-import React from "react";
+import { FC } from "react";
 
 import Button from "../Button";
 import { useData } from "@/context/DataContext";
 
-const TimeControlBar: React.FC = () => {
+const TimeControlBar: FC = () => {
   const {
     isPaused,
     customTimeframe,

@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 
 import { Dashboard } from "@/views";
 import { Layout } from "@/layout/Layout";
@@ -8,7 +8,7 @@ import { DataProvider } from "@/context/DataContext";
 import "./app.css";
 
 // Main App component
-const App: React.FC = () => {
+const App: FC = () => {
   return (
     <UIProvider>
       <DataProvider>

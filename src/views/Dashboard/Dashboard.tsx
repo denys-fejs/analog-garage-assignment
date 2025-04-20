@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 
 import {
   LineChart,
@@ -20,7 +20,7 @@ import { useData } from "@/context/DataContext";
 import TimeControlBar from "@/components/TimeControlBar";
 
 // Dashboard component to visualize producer data with enhanced time controls
-const Dashboard: React.FC = () => {
+const Dashboard: FC = () => {
   const {
     producers,
     filteredData,

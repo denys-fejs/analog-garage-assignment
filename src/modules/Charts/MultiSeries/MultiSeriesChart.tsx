@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { FC, useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -11,17 +11,10 @@ import {
 } from "recharts";
 
 import { formatTimestamp } from "@/utils";
-import { DataPoint, Producer } from "@/types";
 
-interface MultiSeriesChartProps {
-  dataSeries: Record<string, DataPoint[]>;
-  producers: Producer[];
-  height?: number;
-  className?: string;
-  showBrush?: boolean;
-}
+import { MultiSeriesChartProps } from "./types";
 
-const SimpleMultiSeriesChart: React.FC<MultiSeriesChartProps> = ({
+const SimpleMultiSeriesChart: FC<MultiSeriesChartProps> = ({
   dataSeries,
   producers,
   height = 400,

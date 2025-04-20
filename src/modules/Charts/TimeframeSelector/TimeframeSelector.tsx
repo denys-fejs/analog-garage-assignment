@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import { FC, useEffect } from "react";
 
 import { TimeframeUnit } from "@/types";
 import { useData } from "@/context/DataContext";
 
-const TimeframeSelector: React.FC = () => {
+const TimeframeSelector: FC = () => {
   const {
     dataPoints,
     filteredData,

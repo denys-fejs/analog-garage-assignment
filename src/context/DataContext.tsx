@@ -1,4 +1,13 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  ReactNode,
+  FC
+} from "react";
 
 import { config } from "@/config";
 import { useThrottle } from "@/hooks/useThrottle";
@@ -46,7 +55,7 @@ const DataContext = createContext<DataContextProps | undefined>(undefined);
 
 //DataProvider component for managing real-time data state
 
-export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
   // Create producer list with unique IDs and colors
   const [producers] = useState<Producer[]>(
     Array.from({ length: 10 }, (_, i) => ({

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { FC, useMemo } from "react";
 import {
   LineChart as RechartsLineChart,
   Line,
@@ -10,19 +10,11 @@ import {
   Legend
 } from "recharts";
 
-import { DataPoint } from "@/types";
 import { formatTimestamp } from "@/utils";
 
-interface LineChartProps {
-  data: DataPoint[];
-  color?: string;
-  height?: number;
-  name?: string;
-  showLegend?: boolean;
-  className?: string;
-}
+import { LineChartProps } from "./types";
 
-const LineChart: React.FC<LineChartProps> = ({
+const LineChart: FC<LineChartProps> = ({
   data,
   color = "#3B82F6",
   height = 300,

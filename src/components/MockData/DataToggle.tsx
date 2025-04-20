@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, FC } from "react";
 
 import { websocketService } from "@/services/websocket.service";
 
-interface DataToggleProps {
-  className?: string;
-}
+import { DataToggleProps } from "./types";
 
-const DataToggle: React.FC<DataToggleProps> = ({ className = "" }) => {
+const DataToggle: FC<DataToggleProps> = ({ className = "" }) => {
   const [useMockData, setUseMockData] = useState<boolean>(
     Boolean(localStorage.getItem("useMockData"))
   );
