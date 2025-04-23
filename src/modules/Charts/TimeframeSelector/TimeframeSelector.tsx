@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 import { TimeframeUnit } from "@/types";
 import { useData } from "@/context/DataContext";
@@ -13,41 +13,48 @@ const TimeframeSelector: FC = () => {
     setSelectedTimeframe
   } = useData();
 
-  // Update debug info when relevant state changes
-  useEffect(() => {
-    // Count data points for each producer
-    const dataPointCounts: { [key: string]: number } = {};
-    const filteredPointCounts: { [key: string]: number } = {};
-    let minTimestamp = Number.MAX_SAFE_INTEGER;
-    let maxTimestamp = 0;
+  // Track which button was last clicked to prevent double-clicks
+  const [lastClicked, setLastClicked] = useState<string | null>(null);
 
-    // Analyze raw data points
-    Object.entries(dataPoints).forEach(([producerId, points]) => {
-      dataPointCounts[producerId] = points.length;
+  const clickTimeout = useRef<number | null>(null);
 
-      // Find min/max timestamps across all data
-      if (points.length > 0) {
-        const timestamps = points.map(p => p.timestamp);
-        const localMin = Math.min(...timestamps);
-        const localMax = Math.max(...timestamps);
-
-        if (localMin < minTimestamp) minTimestamp = localMin;
-        if (localMax > maxTimestamp) maxTimestamp = localMax;
-      }
-    });
-
-    // Analyze filtered data points
-    Object.entries(filteredData).forEach(([producerId, points]) => {
-      filteredPointCounts[producerId] = points.length;
-    });
-  }, [dataPoints, filteredData, selectedTimeframe]);
-
-  // Force timeframe selection
+  // Force timeframe selection with debouncing and protection against double-clicks
   const selectTimeframe = (
     timeframe: { value: number; unit: TimeframeUnit; label: string } | null
   ) => {
-    setSelectedTimeframe(timeframe);
+    const buttonId = timeframe?.label || "all";
+
+    if (
+      buttonId === lastClicked &&
+      ((timeframe === null && selectedTimeframe === null) ||
+        timeframe?.label === selectedTimeframe?.label)
+    ) {
+      return;
+    }
+
+    // Update the last clicked button
+    setLastClicked(buttonId);
+
+    // Prevent multiple clicks within a short time period
+    if (clickTimeout.current) {
+      clearTimeout(clickTimeout.current);
+    }
+
+    // Apply the timeframe after a short delay
+    clickTimeout.current = window.setTimeout(() => {
+      setSelectedTimeframe(timeframe);
+      clickTimeout.current = null;
+    }, 100);
   };
+
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      if (clickTimeout.current) {
+        clearTimeout(clickTimeout.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -61,6 +68,7 @@ const TimeframeSelector: FC = () => {
                 : "bg-gray-200 text-gray-800 hover:bg-gray-300"
             }`}
             onClick={() => selectTimeframe(null)}
+            disabled={lastClicked === "all" && clickTimeout.current !== null}
           >
             All Data
           </button>
@@ -74,11 +82,28 @@ const TimeframeSelector: FC = () => {
                   : "bg-gray-200 hover:bg-gray-300"
               }`}
               onClick={() => selectTimeframe(tf)}
+              disabled={lastClicked === tf.label && clickTimeout.current !== null}
             >
               {tf.label}
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="text-xs text-gray-500 mt-2">
+        {Object.keys(dataPoints).length > 0 && (
+          <div>
+            <div>
+              Total data points:{" "}
+              {Object.values(dataPoints).reduce((sum, arr) => sum + arr.length, 0)}
+            </div>
+            <div>
+              Filtered data points:{" "}
+              {Object.values(filteredData).reduce((sum, arr) => sum + arr.length, 0)}
+            </div>
+            <div>Current timeframe: {selectedTimeframe?.label || "All data"}</div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -252,23 +252,39 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   // Filter data based on selected timeframe or custom timeframe
   useEffect(() => {
-    const filterData = () => {
-      // This should skip filtering when timeframe is null
-      if (!selectedTimeframe) {
-        return throttledData;
-      }
+    // This will ensure filtering is applied less frequently during rapid timeframe changes
+    const timeoutId = setTimeout(() => {
+      const filterData = () => {
+        // Skip filtering when timeframe is null
+        if (!selectedTimeframe) {
+          return throttledData;
+        }
 
-      const newFilteredData: Record<string, DataPoint[]> = {};
+        const newFilteredData: Record<string, DataPoint[]> = {};
 
-      Object.entries(throttledData).forEach(([producerId, data]) => {
-        const filtered = filterDataByTimeframe(data, selectedTimeframe);
-        newFilteredData[producerId] = filtered;
-      });
+        Object.entries(throttledData).forEach(([producerId, data]) => {
+          if (data.length > 0) {
+            const filtered = filterDataByTimeframe(data, selectedTimeframe);
 
-      return newFilteredData;
-    };
+            // Ensure we always have some data to display
+            if (filtered.length === 0 && data.length > 0) {
+              // If filtering resulted in no data, show the most recent points
+              newFilteredData[producerId] = data.slice(-Math.min(100, data.length));
+            } else {
+              newFilteredData[producerId] = filtered;
+            }
+          } else {
+            newFilteredData[producerId] = [];
+          }
+        });
 
-    setFilteredData(filterData());
+        return newFilteredData;
+      };
+
+      setFilteredData(filterData());
+    }, 50); // Small delay to prevent too many updates
+
+    return () => clearTimeout(timeoutId);
   }, [throttledData, selectedTimeframe]);
 
   // Connect/disconnect WebSocket based on active producers

@@ -37,34 +37,46 @@ export const timeframeToMs = (timeframe: Timeframe): number => {
 
 // Filters data points based on a specified timeframe
 export const filterDataByTimeframe = (data: DataPoint[], timeframe: Timeframe): DataPoint[] => {
-  // If we have the real backend (detected by timestamp clustering)
-  if (data.length > 100) {
-    // Check if data has tight timestamp clustering
-    const firstPoint = data[0]?.timestamp || 0;
-    const lastPoint = data[data.length - 1]?.timestamp || 0;
-    const timeSpan = lastPoint - firstPoint;
+  // If no data or timeframe, return original data
+  if (!data || data.length === 0 || !timeframe) {
+    return data;
+  }
 
-    // If data spans less than 3 seconds, it's likely from real backend
-    if (timeSpan < 3000 && timeSpan > 0) {
-      // For real backend, use percentage-based filtering instead
-      const timeframeMs = timeframeToMs(timeframe);
-      let percentage = 100;
+  // Calculate timeframe in milliseconds
+  const timeframeMs = timeframeToMs(timeframe);
 
-      // Convert timeframe to approximate percentages
-      if (timeframeMs <= 10000) percentage = 20;
-      else if (timeframeMs <= 30000) percentage = 40;
-      else if (timeframeMs <= 60000) percentage = 60;
-      else if (timeframeMs <= 300000) percentage = 80;
+  // Sort data by timestamp (descending)
+  const sortedData = [...data].sort((a, b) => b.timestamp - a.timestamp);
 
-      const count = Math.ceil(data.length * (percentage / 100));
-      return data.slice(-count); // Take the most recent points
+  // Use the most recent timestamp as our reference point
+  const latestTimestamp = sortedData[0].timestamp;
+  const cutoffTime = latestTimestamp - timeframeMs;
+
+  // Filter data based on the calculated cutoff
+  const filtered = data.filter(point => point.timestamp >= cutoffTime);
+
+  // For shorter timeframes, enforce some maximum point limits to prevent overwhelming the UI
+  if (timeframe.unit === "seconds" && timeframe.value <= 10) {
+    // For 10-second timeframe, limit to ~20% of points
+    const maxPoints = Math.max(50, Math.floor(data.length * 0.2));
+    if (filtered.length > maxPoints) {
+      return sortedData.slice(0, maxPoints);
+    }
+  } else if (timeframe.unit === "seconds" && timeframe.value <= 30) {
+    // For 30-second timeframe, limit to ~30% of points
+    const maxPoints = Math.max(75, Math.floor(data.length * 0.3));
+    if (filtered.length > maxPoints) {
+      return sortedData.slice(0, maxPoints);
+    }
+  } else if (timeframe.unit === "minutes" && timeframe.value <= 1) {
+    // For 1-minute timeframe, limit to ~40% of points
+    const maxPoints = Math.max(100, Math.floor(data.length * 0.4));
+    if (filtered.length > maxPoints) {
+      return sortedData.slice(0, maxPoints);
     }
   }
 
-  // Original timestamp-based filtering for mock data
-  const now = Date.now();
-  const cutoffTime = now - timeframeToMs(timeframe);
-  return data.filter(point => point.timestamp >= cutoffTime);
+  return filtered;
 };
 
 // Filters data points based on a custom time range

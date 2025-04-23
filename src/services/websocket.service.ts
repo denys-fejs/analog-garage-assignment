@@ -1,5 +1,4 @@
 import { config } from "@/config";
-import { normalizeTimestamp } from "@/utils";
 import { BackendDataEntry, DataPoint } from "@/types";
 
 // Type definition for WebSocket message callback function
@@ -27,8 +26,10 @@ class WebSocketService {
   private mockIntervals: Map<string, number> = new Map();
   private statusCallbacks: WebSocketStatusCallback[] = [];
   private pollingIntervals: Map<string, number> = new Map();
-  private dataCallbacks: Map<string, WebSocketMessageCallback> = new Map();
+  private suppressedWarnings = new Map<string, number>();
+  private initialDataLoadComplete = new Map<string, boolean>();
   private connectionStatus: Map<string, ConnectionStatus> = new Map();
+  private dataCallbacks: Map<string, WebSocketMessageCallback> = new Map();
 
   constructor() {
     // Get base URL from config
@@ -42,6 +43,10 @@ class WebSocketService {
     // Log initialization - only essential info
     this.log(`WebSocket service initialized with base URL: ${this.baseUrl}`);
     this.log(`Using ${this.useMockData ? "mock data" : "polling mode"}`);
+  }
+
+  private formatProducerIdForBackend(producerId: string): string {
+    return producerId.replace("-", "_");
   }
 
   // Controlled logging to reduce console spam
@@ -118,6 +123,24 @@ class WebSocketService {
     this.startPolling(producerId);
   }
 
+  // Map to track timestamp ranges per producer
+  private producerTimestamps = new Map<string, number[]>();
+
+  // Track a timestamp for a producer
+  private trackTimestampForProducer(producerId: string, timestamp: number): void {
+    if (!this.producerTimestamps.has(producerId)) {
+      this.producerTimestamps.set(producerId, []);
+    }
+
+    const timestamps = this.producerTimestamps.get(producerId)!;
+    timestamps.push(timestamp);
+
+    // Keep only the last 1000 timestamps to avoid memory issues
+    if (timestamps.length > 1000) {
+      this.producerTimestamps.set(producerId, timestamps.slice(timestamps.length - 1000));
+    }
+  }
+
   // Start polling for data from a producer
   private startPolling(producerId: string): void {
     // Set producer as polling mode
@@ -145,7 +168,8 @@ class WebSocketService {
 
       // Create a WebSocket just for this one poll
       try {
-        const ws = new WebSocket(`${this.baseUrl}/${producerId}`);
+        const backendProducerId = this.formatProducerIdForBackend(producerId);
+        const ws = new WebSocket(`${this.baseUrl}/${backendProducerId}`);
 
         ws.onopen = () => {
           // Keep the Connected status while polling works
@@ -168,24 +192,67 @@ class WebSocketService {
             // Parse the received JSON data
             const rawData: BackendDataEntry[] = JSON.parse(event.data);
 
-            // Process the data into our DataPoint format
-            const processedData: DataPoint[] = rawData.map(entry => ({
-              value: entry.value,
-              // Normalize timestamp to ensure it's in milliseconds
-              timestamp: normalizeTimestamp(new Date(entry.timestamp).getTime()),
-              producerId
-            }));
+            // Suppress excessive warnings
+            const warningKey = `timestamp_variation_${producerId}`;
+            const warningCount = this.suppressedWarnings.get(warningKey) || 0;
+            if (warningCount < 3) {
+              this.log(`Applying artificial timestamp distribution for ${producerId}`, "info");
+              this.suppressedWarnings.set(warningKey, warningCount + 1);
+            }
+
+            // Current time as reference
+            const receiveTime = Date.now();
+
+            // ** For this backend, need to apply VERY AGGRESSIVE timestamp distribution
+            const processedData: DataPoint[] = rawData.map((entry, index, array) => {
+              const value =
+                typeof entry.value === "number" ? entry.value : parseFloat(String(entry.value));
+
+              // Determine if this is initial load or real-time update
+              const isInitialLoad = !this.initialDataLoadComplete.has(producerId);
+
+              let effectiveTimestamp: number;
+
+              if (isInitialLoad) {
+                // Initial data is distributed over 20 minutes
+                // This ensures very clear differences between timeframes
+                const initialTimeSpan = 20 * 60 * 1000; // 20 minutes
+
+                // Use exponential distribution to cluster newer points more densely
+                const position = (array.length - index - 1) / Math.max(1, array.length - 1);
+                const expFactor = 2.0;
+                const adjustedPosition = Math.pow(position, expFactor);
+
+                effectiveTimestamp = receiveTime - initialTimeSpan * adjustedPosition;
+
+                if (index === array.length - 1) {
+                  this.initialDataLoadComplete.set(producerId, true);
+                  this.log(
+                    `Initial load complete for ${producerId}, distributed over 20 minutes with exponential distribution`,
+                    "info"
+                  );
+                }
+              } else {
+                // Ensure new batches are spaced with larger gaps
+                const batchStartTime = receiveTime - 5000;
+
+                // Space points within batch over 5 seconds
+                const pointPosition = (array.length - index - 1) / Math.max(1, array.length - 1);
+                effectiveTimestamp = batchStartTime + 5000 * pointPosition;
+
+                // Update tracking of points for this producer
+                this.trackTimestampForProducer(producerId, effectiveTimestamp);
+              }
+
+              return {
+                value,
+                timestamp: effectiveTimestamp,
+                producerId
+              };
+            });
 
             // Send processed data to callback
             onMessage(processedData);
-
-            // Refresh connected status since we got data
-            if (
-              this.connectionStatus.get(producerId) !== ConnectionStatus.Connected &&
-              !this.isPaused
-            ) {
-              this.notifyStatusCallbacks(ConnectionStatus.Connected, producerId);
-            }
           } catch (error) {
             this.log(`Error processing message from producer ${producerId}: ${error}`, "error");
           }

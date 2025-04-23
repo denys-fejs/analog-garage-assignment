@@ -38,12 +38,21 @@ const Dashboard: FC = () => {
     // Create data map by timestamp
     const dataMap = new Map();
 
+    // Optimize for large datasets
+    const MAX_CHART_POINTS = 500;
+
     // Loop through specified producers
     producerIds.forEach(producerId => {
       // Use filteredData only, never rawData/dataPoints
-      const producerData = filteredData[producerId] || [];
+      let producerData = filteredData[producerId] || [];
 
       if (producerData.length === 0) return;
+
+      // Downsample if too many points
+      if (producerData.length > MAX_CHART_POINTS) {
+        const sampleInterval = Math.floor(producerData.length / MAX_CHART_POINTS);
+        producerData = producerData.filter((_, index) => index % sampleInterval === 0);
+      }
 
       // Process data points
       producerData.forEach(point => {
